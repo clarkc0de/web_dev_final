@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2e7edd87-f282-4608-8396-7d079b70d6a1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,9 +38,9 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/danie/Documents/web dev/web_dev_final",
+    "last_opened_file_path": "C:/CSCI/Web Dev/web_dev_final",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -64,6 +65,7 @@
       <updated>1763501272116</updated>
       <workItem from="1763501273245" duration="1370000" />
       <workItem from="1763503020353" duration="957000" />
+      <workItem from="1763581865057" duration="401000" />
     </task>
     <servers />
   </component>
