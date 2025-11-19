@@ -1,19 +1,28 @@
 {
   "name": "final_project",
   "version": "1.0.0",
-  "description": "Web Development Final Project",
+  "private": true,
+  "description": "",
+  "homepage": "https://github.com/clarkc0de/web_dev_final#readme",
+  "bugs": {
+    "url": "https://github.com/clarkc0de/web_dev_final/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clarkc0de/web_dev_final.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "private": true,
   "dependencies": {
     "body-parser": "^2.2.0",
     "express": "^5.1.0",
     "mongoose": "^8.20.0"
   },
-  "devDependencies": {},
-  "author": "",
-  "license": "ISC"
+  "devDependencies": {}
 }
