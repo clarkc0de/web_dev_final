@@ -19,7 +19,7 @@ app.get('/archive', function (req, res) {
     res.sendFile(__dirname + "/public/archive.html");
 })
 
-app.get('/edit-figure', function (req, res) {
+app.get('/edit_figure', function (req, res) {
     res.sendFile(__dirname + "/public/edit_figure.html");
 })
 
