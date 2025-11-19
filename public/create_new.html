@@ -29,11 +29,29 @@
     <script src="js/create_new.js" defer></script>
 </head>
 <body>
+
+
 <section class="container">
     <div id="navbar" class="row">
         <button class="col-lg-2 btn" onclick="home()"> Home</button>
         <button class="col-lg-2 btn" onclick="viewArchive()"> Archive</button>
     </div>
 </section>
+
+<section class="container">
+    <form action="/" method="post">
+
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Default file input example</label>
+            <input class="form-control" type="file" id="formFile" accept=".csv">
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary" style="width: 20%">Save</button>;
+            <button type="button" class="btn btn-primary" style="width: 20%" onclick="onCancel()">Cancel</button>
+        </div>
+    </form>
+</section>
+
 </body>
 </html>

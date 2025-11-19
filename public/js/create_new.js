@@ -9,3 +9,7 @@ function home(){
 function viewArchive(){
     location.href = '/archive';
 }
+
+function onCancel(){
+    home()
+}

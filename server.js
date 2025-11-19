@@ -30,3 +30,8 @@ app.get('/create_new', function (req, res) {
 app.get('/export_and_save', function (req, res) {
     res.sendFile(__dirname + "/public/export_and_save.html");
 })
+
+
+app.post('/', function(req, res) {
+    res.redirect('/');
+})
