@@ -1,10 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <title>Edit Figure</title>
+
+    <!-- Chart.js + date adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!-- PapaParse for robust CSV parsing in browser -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+
+    <style>
+        body { font-family: Arial, sans-serif; padding: 18px; }
+        label { margin-right: 8px; }
+        #controls { margin-bottom: 12px; }
+        #chartWrapper { margin-top: 12px; }
+        #statsTable { border-collapse: collapse; width: 100%; max-width: 1200px; overflow-x: auto; display: block; }
+        #statsTable th, #statsTable td { border: 1px solid #ccc; padding: 6px 8px; text-align: right; }
+        #statsTable th.month { writing-mode: horizontal-tb; text-align: center; background: #f4f4f4; }
+        #statsTable th.rowLabel { background: #eef; text-align: left; }
+    </style>
 </head>
 <body>
+<h2>Edit Figure — Graph & Monthly Table</h2>
 
+<div id="controls">
+    <label>Date column:
+        <input id="dateCol" type="text" value="Date - Closed" />
+    </label>
+    <label>Price column:
+        <input id="priceCol" type="text" value="Price" />
+    </label>
+    <button id="refreshBtn">Load / Refresh</button>
+    <button id="exportPngBtn">Export Chart PNG</button>
+</div>
+
+<div id="chartWrapper">
+    <canvas id="priceChart" width="1200" height="500"></canvas>
+</div>
+
+<h3>Monthly Stats (wide)</h3>
+<div style="overflow:auto">
+    <table id="statsTable"></table>
+</div>
+
+<script src="js/edit_figure.js"></script>
 </body>
 </html>
