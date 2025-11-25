@@ -55,7 +55,7 @@ app.post('/upload-csv', function(req, res) {
     }
 
     temporaryCSV = csv;  // store the uploaded CSV text
-
+    console.log(temporaryCSV);
     res.send("CSV received");
 });
 
