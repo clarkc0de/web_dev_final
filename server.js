@@ -12,6 +12,12 @@ const entrySchema = {
 
 const Entry = mongoose.model('Entry', entrySchema);
 
+mongoose.connect('mongodb://localhost:27017/salesDB').then(() => {
+    console.log("db connected");
+}).catch(err => {
+    console.error("could not connect to db: " + err);
+})
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));
@@ -81,13 +87,12 @@ app.post('/upload-csv', function(req, res) {
         row: row,
         col: col,
     }
-    addOne(entry).then(()=>{console.log("saved data OK")}).catch(err => console.log(err));
+    addOne(entry);
 });
 async function addOne(entry){
     try{
-        await mongoose.connect('mongodb://localhost:27017/salesDB')
-
-        console.log("Connected to DB");
+        console.log("Saving");
+        console.log(entry);
         const new_entry = new Entry(entry);
         await new_entry.save().then(()=>{console.log("saved")});
     }
