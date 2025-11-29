@@ -4,6 +4,19 @@ const mongoose = require("mongoose");
 const app = express();
 
 
+const entrySchema = {
+    csv: String,
+    row: String,
+    col: String,
+}
+
+const Entry = mongoose.model('Entry', entrySchema);
+
+mongoose.connect('mongodb://localhost:27017/salesDB').then(() => {
+    console.log("db connected");
+}).catch(err => {
+    console.error("could not connect to db: " + err);
+})
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
@@ -46,8 +59,6 @@ app.post('/upload-csv', function(req, res) {
 
     //console.log("BODY:", req.body);
     //res.send("ok");
-
-
     const { csv } = req.body;
 
     if (!csv) {
@@ -55,10 +66,40 @@ app.post('/upload-csv', function(req, res) {
     }
 
     temporaryCSV = csv;  // store the uploaded CSV text
-
+    console.log(temporaryCSV);
     res.send("CSV received");
-});
 
+    let csvString = '';
+
+    // Split the CSV by rows and columns (this may vary depending on your CSV format)
+    const rows = temporaryCSV.split('\n');  // Split by rows
+    rows.forEach(row => {
+        const columns = row.split(',');  // Split by columns (assuming comma-separated values)
+        csvString += columns.join(' ') + ' ';  // Join columns into a string with spaces (or any delimiter you prefer)
+    });
+
+    console.log('CSV String:', csvString);
+    const row = req.body.row;
+    const col = req.body.col;
+
+    const entry = {
+        csv: csvString,
+        row: row,
+        col: col,
+    }
+    addOne(entry);
+});
+async function addOne(entry){
+    try{
+        console.log("Saving");
+        console.log(entry);
+        const new_entry = new Entry(entry);
+        await new_entry.save().then(()=>{console.log("saved")});
+    }
+    catch(err){
+        console.log("Found error:" + err);
+    }
+}
 
 app.get('/get-csv', function(req, res) {
     if (!temporaryCSV) {
