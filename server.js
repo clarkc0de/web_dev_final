@@ -5,6 +5,7 @@ const app = express();
 
 
 const entrySchema = {
+    name: String,
     csv: String,
     row: String,
     col: String,
@@ -79,10 +80,12 @@ app.post('/upload-csv', function(req, res) {
     });
 
     console.log('CSV String:', csvString);
+    const csv_name = req.body.csv_name;
     const row = req.body.row;
     const col = req.body.col;
 
     const entry = {
+        name: csv_name,
         csv: csvString,
         row: row,
         col: col,

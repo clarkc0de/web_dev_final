@@ -9,6 +9,7 @@ mongoose.connect('mongodb://localhost:27017/salesDB', {})
 
 
 const entrySchema = {
+    csv_name: String,
     csv: String,
     row: String,
     col: String,
