@@ -4,15 +4,13 @@
     width: 100%;
 }
 #navbar{
-    margin-top: 5%;
-    margin-bottom: 5%;
     background-color: #e9ebef;
+    margin-top: 0;
 }
 
 
 #navbar .btn{
     font-size: x-large;
-
 }
 
 #navbar .btn:hover{
@@ -27,4 +25,8 @@
 #csv-upload .btn{
     margin-top: 5%;
     background-color: #dde1e6;
+}
+
+.input-error {
+    border: 2px solid red;
 }

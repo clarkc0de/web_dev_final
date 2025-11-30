@@ -24,7 +24,7 @@ app.use(express.static(__dirname + "/public"));
 
 
 app.listen(3000, function () {
-    console.log("server started at 3000");
+    console.log("server started at http://localhost:3000");
 });
 
 app.get('/', function (req, res) {

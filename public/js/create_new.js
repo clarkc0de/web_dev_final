@@ -20,9 +20,36 @@ function onCancel(){
 function makeFigure(){
     const input = $('#formFile')[0];
     const file = input.files[0];
+    const row = $('#row-input');
+    const col = $('#col-input');
 
+
+    //find error message and border and clear it
+    const csvDiv = document.getElementById('formFile');
+    const rowDiv = document.getElementById('row-input');
+    const colDiv = document.getElementById('col-input');
+    csvDiv.style.border ="";
+    rowDiv.style.border ="";
+    colDiv.style.border ="";
+    $('#error_message').text('');
+    //show error
     if (!file) {
         console.log("No file selected.");
+        $('#error_message').text('No file selected.');
+        csvDiv.style.border = "2px solid red";
+        return;
+    }
+
+    if(row.val().length < 3){
+        console.log(row.val());
+        $('#error_message').text('Please select row name.');
+        rowDiv.style.border = "2px solid red";
+        return;
+    }
+    if(col.val().length < 3){
+        console.log(col.val());
+        $('#error_message').text('Please select column name.');
+        colDiv.style.border = "2px solid red";
         return;
     }
 
