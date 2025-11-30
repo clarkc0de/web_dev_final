@@ -89,6 +89,7 @@ app.post('/upload-csv', function(req, res) {
     }
     addOne(entry);
 });
+
 async function addOne(entry){
     try{
         console.log("Saving");
@@ -107,4 +108,18 @@ app.get('/get-csv', function(req, res) {
     }
 
     res.send(temporaryCSV);
+});
+
+app.get('/get-all-entries', function (req, res) {
+    Entry.find().then(entries => {
+        res.send({
+            "message": "success",
+            "data": entries
+        });
+    }).catch(err => {
+        res.send({
+            "message": err,
+            "data": []
+        });
+    });
 });
