@@ -1,5 +1,30 @@
-#navbar {
+#header{
     text-align: center;
-    background-color: #90959c;
+    background-color: #b1b6bc;
     width: 100%;
+}
+#navbar{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    background-color: #e9ebef;
+}
+
+
+#navbar .btn{
+    font-size: x-large;
+
+}
+
+#navbar .btn:hover{
+    background-color: #dde1e6;
+}
+
+#csv-upload{
+    margin-top: 5%;
+    text-align: center;
+}
+
+#csv-upload .btn{
+    margin-top: 5%;
+    background-color: #dde1e6;
 }
