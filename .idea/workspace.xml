@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2e7edd87-f282-4608-8396-7d079b70d6a1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/archive.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/archive.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/archive.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/archive.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/create_new.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/create_new.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,9 +42,9 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Robert&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/tenzin/Documents/Class Materials/Fall 2025-2026/CSCI 344/Final/web_dev_final&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/danie/Documents/web dev/web_dev_final&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -84,9 +85,9 @@
       <workItem from="1763503020353" duration="957000" />
       <workItem from="1763518465763" duration="262000" />
       <workItem from="1764090843447" duration="13918000" />
-      <workItem from="1764368598739" duration="882000" />
-      <workItem from="1764376282797" duration="1679000" />
-      <workItem from="1764525127364" duration="1158000" />
+      <workItem from="1764464228406" duration="200000" />
+      <workItem from="1764464755873" duration="1146000" />
+      <workItem from="1764526952918" duration="1881000" />
     </task>
     <servers />
   </component>

@@ -31,9 +31,21 @@
 <body>
 
 <section class="container">
-    <div id="navbar" class="row">
-        <button class="col-lg-2 btn" onclick="createNew()"> Create New</button>
-        <button class="col-lg-2 btn" onclick="viewArchive()"> Archive</button>
+    <div id="header" class="row rounded-bottom">
+        <h1>Sales Trends Analytics</h1>
+    </div>
+</section>
+
+<section class="container">
+    <div id="navbar" class="col-lg-6 row d-flex justify-content-center align-items-center vh-100 rounded-3">
+        <div class="centered-element">
+            <div class="row">
+                <button class="col-lg-3 offset-lg-4 btn" onclick="createNew()"> Create New Graph</button>
+            </div>
+            <div class="row">
+                <button class="col-lg-3 offset-lg-4 btn" onclick="viewArchive()"> View Archive</button>
+            </div>
+        </div>
     </div>
 </section>
 

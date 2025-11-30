@@ -32,23 +32,36 @@
 
 
 <section class="container">
-    <div id="navbar" class="row">
+    <div id="navbar" class="row" style="margin: 0">
         <button class="col-lg-2 btn" onclick="home()"> Home</button>
         <button class="col-lg-2 btn" onclick="viewArchive()"> Archive</button>
     </div>
 </section>
 
 <section class="container">
-    <form action="/" method="post">
+    <form id="csv-upload" action="/" method="post">
 
-        <div class="mb-3">
-            <label for="formFile" class="form-label">Default file input example</label>
+        <div class="mb-3 col-lg-6 offset-lg-3">
+            <label for="formFile" class="form-label">Select Data</label>
             <input class="form-control" type="file" id="formFile" accept=".csv">
         </div>
 
+        <div class="form-group col-lg-4 offset-lg-4">
+            <label for="row-input">Select Relevant Row</label>
+            <input type="text" class="form-control" style="" id="row-input" placeholder="Date">
+        </div>
+        <div class="form-group col-lg-4 offset-lg-4">
+            <label for="col-input">Select Relevant Column</label>
+            <input type="text" class="form-control" style="" id="col-input" placeholder="Price">
+        </div>
+
         <div class="mb-3">
-            <button type="button" class="btn btn-primary" style="width: 20%" onclick="makeFigure()">Save</button>;
-            <button type="button" class="btn btn-primary" style="width: 20%" onclick="onCancel()">Cancel</button>
+            <p id="error_message" style="color: red"></p>
+        </div>
+
+        <div class="mb-3">
+            <button type="button" class="btn" style="width: 20%" onclick="makeFigure()">Save</button>
+            <button type="button" class="btn" style="width: 20%" onclick="onCancel()">Cancel</button>
         </div>
     </form>
 </section>
