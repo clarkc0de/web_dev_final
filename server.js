@@ -5,10 +5,17 @@ const app = express();
 
 
 const entrySchema = {
-    name: String,
-    csv: String,
-    row: String,
-    col: String,
+    master: Object,
+    current: Object,
+    style: Object,
+    text:{
+        required:false,
+        type:String,
+    },
+    name:{
+        required:false,
+        type:String,
+    }
 }
 
 const Entry = mongoose.model('Entry', entrySchema);
@@ -58,39 +65,58 @@ let temporaryCSV = null;
 
 app.post('/upload-csv', function(req, res) {
 
-    //console.log("BODY:", req.body);
+    console.log("got here");
     //res.send("ok");
-    const { csv } = req.body;
+    const from = req.body.from;
 
-    if (!csv) {
-        return res.send("No CSV provided");
+    if (from==="create_new") {
+        const {csv} = req.body;
+
+        if (!csv) {
+            return res.send("No CSV provided");
+        }
+
+        temporaryCSV = csv;  // store the uploaded CSV text
+        console.log(temporaryCSV);
+        res.send("CSV received");
+
+        let csvString = '';
+        const row = req.body.row;
+        const col = req.body.col;
+
+        // Split the CSV by rows and columns (this may vary depending on your CSV format)
+        const rows = temporaryCSV.split('\n');  // Split by rows
+        rows.forEach(row => {
+            const columns = row.split(',');  // Split by columns (assuming comma-separated values)
+            csvString += columns.join(' ') + ' ';  // Join columns into a string with spaces (or any delimiter you prefer)
+        });
+
+        console.log('CSV String:', csvString);
+
+
+    }else if (from==="export_and_save") {
+        const csv= req.body;
+
+        if (!csv) {
+            return res.send("No CSV provided");
+        }
+
+        temporaryCSV = csv;  // store the uploaded CSV text
+        console.log(temporaryCSV);
+        res.send("CSV received");
+
+
+        const entry = {
+            master: req.body.master,
+            current: req.body.current,
+            style: req.body.style,
+            text:(req.body.text==="") ? null : req.body.text,
+            name: (req.body.name==="" ? null : req.body.name),
+        }
+        addOne(entry);
+
     }
 
-    temporaryCSV = csv;  // store the uploaded CSV text
-    console.log(temporaryCSV);
-    res.send("CSV received");
-
-    let csvString = '';
-
-    // Split the CSV by rows and columns (this may vary depending on your CSV format)
-    const rows = temporaryCSV.split('\n');  // Split by rows
-    rows.forEach(row => {
-        const columns = row.split(',');  // Split by columns (assuming comma-separated values)
-        csvString += columns.join(' ') + ' ';  // Join columns into a string with spaces (or any delimiter you prefer)
-    });
-
-    console.log('CSV String:', csvString);
-    const csv_name = req.body.csv_name;
-    const row = req.body.row;
-    const col = req.body.col;
-
-    const entry = {
-        name: csv_name,
-        csv: csvString,
-        row: row,
-        col: col,
-    }
-    addOne(entry);
 });
 async function addOne(entry){
     try{
@@ -111,3 +137,14 @@ app.get('/get-csv', function(req, res) {
 
     res.send(temporaryCSV);
 });
+
+app.post('/export_and_save', function(req, res) {
+    temporaryCSV = req.body.instanceData;
+    console.log(temporaryCSV);
+    if(!temporaryCSV) {
+        return res.send("No CSV stored");
+    }
+    res.send(`
+         <script>location.href="/export_and_save.html"</script>`
+    );
+})

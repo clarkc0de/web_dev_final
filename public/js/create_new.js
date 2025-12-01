@@ -66,7 +66,7 @@ function makeFigure(){
         await fetch('/upload-csv', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ csv: csvText, row:row, col: col, csv_name: csv_name }),
+            body: JSON.stringify({ csv: csvText, row:row, col: col, from: "create_new"})
         });
 
         //location.href = '/edit_figure';
