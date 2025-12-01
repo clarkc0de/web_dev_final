@@ -1,10 +1,131 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <title>Edit Figure</title>
+
+    <!-- Chart.js + date adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!-- PapaParse for robust CSV parsing in browser -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <link rel="stylesheet" href="/css/index.css">
+
+    <!--    Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+            crossorigin="anonymous"></script>
+
+    <!--    Google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=RocknRoll+One&display=swap"
+          rel="stylesheet">
+
+    <!--    fontawesome-->
+    <script src="https://kit.fontawesome.com/e5b5eed843.js" crossorigin="anonymous"></script>
+
+    <!--    Google jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- html to pdf-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- html to canvas-->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <!--page script-->
+    <script src="js/export_and_save.js"  defer></script>
+
+
+
+    <style>
+        body { font-family: Arial, sans-serif; padding: 18px; }
+        label { margin-right: 8px; }
+        #controls { margin-bottom: 12px; }
+        #chartWrapper {
+            margin-top: 12px;
+            width: 100%;
+            height: 500px !important;
+        }
+        #statsTable { border-collapse: collapse; width: 100%; max-width: 1200px; overflow-x: auto; display: block; }
+        #statsTable th, #statsTable td { border: 1px solid #ccc; padding: 6px 8px; text-align: right; }
+        #statsTable th.month { writing-mode: horizontal-tb; text-align: center; background: #f4f4f4; }
+        #statsTable th.rowLabel { background: #eef; text-align: left; }
+
+
+        #chartWrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        #priceChart {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #checkboxes {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-left: 10px;
+            border-left: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
+<section class="container-fluid">
+    <div id="navbar" class="row">
+        <button class="col-lg-2 btn" onclick="home()"> Home</button>
+        <button class="col-lg-2 btn" onclick="viewArchive()"> Archive</button>
+    </div>
+</section>
+
+
+<div class="row">
+
+    <div class="col-md-8">
+        <div id="doubleWrapper">
+        <div id="chartWrapper">
+            <canvas id="priceChart"></canvas>
+        </div>
+
+        <h3>Monthly Stats (wide)</h3>
+        <div style="overflow:auto">
+            <table id="statsTable"></table>
+        </div>
+        </div>
+            <textarea id="Text_Analysis" rows="10" cols="150" placeholder="If Exporting as a PDF, you can input your text analysis here"></textarea>
+
+    </div>
+    <div class="col-md-4">
+        <label for="export_type">Export type:</label>
+        <select id="export_type">
+            <option value=0>Graph as png</option>
+            <option value=1>Graph as jpeg</option>
+            <option value=2>Chart as png</option>
+            <option value=3>Chart as jpeg</option>
+            <option value=4>Graph and Chart as png</option>
+            <option value=5>Graph and Chart as jpeg</option>
+            <option value=6>full pdf</option>
+        </select><br><br>
+
+
+        <div class="form-group">
+            <label for="project_name">Project name for archive</label>
+            <input type="text" class="form-control" id="project_name" placeholder="Price">
+        </div>
+
+        <div id="prime_actins" class="row">
+            <button class="btn" onclick="SavetoArchive()"> Save to Archive</button>
+            <button class="btn" onclick="ExportProject()"> Export Project</button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

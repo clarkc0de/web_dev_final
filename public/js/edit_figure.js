@@ -457,6 +457,57 @@ function exportChartPNG() {
     a.click();
 }
 
+
+function convertForExport(rows) {
+    const out = {
+        meanPoints: [],
+        medianPoints: [],
+        meanRegression: [],
+        medianRegression: [],
+        table: {}
+    };
+
+    for (const r of rows) {
+        const d = new Date(r.monthDate);
+        out.table[r.monthYear] = { mean: r.mean, median: r.median };
+
+        if (r.mean != null) out.meanPoints.push({ x: d, y: r.mean });
+        if (r.median != null) out.medianPoints.push({ x: d, y: r.median });
+    }
+
+    return out;
+}
+
+function ExportorSave() {
+    const prepared = {};
+    const preparedAll ={};
+    for (const source in currentBySource) {
+        prepared[source] = convertForExport(currentBySource[source]);
+    }
+    for (const source in masterBySource) {
+        preparedAll[source] = convertForExport(masterBySource[source]);
+    }
+
+    const payload = {
+        master: preparedAll,
+        current: prepared,
+        style: styleConfig
+    };
+
+    const form = document.createElement('form');
+    form.method = 'post';
+    form.action = '/export_and_save';
+
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'instanceData';
+    input.value = JSON.stringify(payload);
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
+
 // ---------- Wire up buttons ----------
 document.getElementById('refreshBtn').addEventListener('click', renderAll);
 document.getElementById('exportPngBtn').addEventListener('click', exportChartPNG);
