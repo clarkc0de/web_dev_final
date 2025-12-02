@@ -148,3 +148,17 @@ app.post('/export_and_save', function(req, res) {
          <script>location.href="/export_and_save.html"</script>`
     );
 })
+
+app.get('/get-all-entries', function (req, res) {
+    Entry.find().then(entries => {
+        res.send({
+            "message": "success",
+            "data": entries
+        });
+    }).catch(err => {
+        res.send({
+            "message": err,
+            "data": []
+        });
+    });
+});
