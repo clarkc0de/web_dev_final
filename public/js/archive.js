@@ -15,7 +15,7 @@ function createNew(){
 function getFigureObject(figure) {
     return `<li class="list-group-item" data-f="${figure._id.toString()}">
         <div class="row">
-            <div class="col"><a>Name</a></div>
+            <div class="col"><a>${figure.name}</a></div>
             <div class="col"><a>Details</a></div>
             <div class="col">
                 <button class="btn btn-primary" onclick="editFigure()">Edit</button>
