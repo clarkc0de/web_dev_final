@@ -450,3 +450,7 @@ function ExportProject(){
     }
 }
 
+
+function home(){
+    location.href="/";
+}

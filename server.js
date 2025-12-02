@@ -4,6 +4,50 @@ const mongoose = require("mongoose");
 const app = express();
 
 
+
+const {MongoClient, ServerApiVersion} = require('mongodb');
+const uri = "mongodb+srv://robertmatzkin1_db_user:Hfiy92M12Tn7V0gH@salescluster.yhc6eif.mongodb.net/?appName=SalesCluster";
+//Hfiy92M12Tn7V0gH
+
+//connection stuff
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+});
+
+async function run() {
+    try {
+        // Connect the client to the server	(optional starting in v4.7)
+        await client.connect();
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ping: 1});
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+}
+
+run().catch(console.dir);
+
+mongoose.connect(uri, {})
+    .then(function (db) {
+        console.log("db connected");
+    });
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json());
+app.use(express.static(__dirname + "/public"));
+
+
+app.listen(8080, function () {
+    console.log("server started at http://localhost:8080");
+});
+
+
 const entrySchema = {
     master: Object,
     current: Object,
@@ -20,20 +64,8 @@ const entrySchema = {
 
 const Entry = mongoose.model('Entry', entrySchema);
 
-mongoose.connect('mongodb://localhost:27017/salesDB').then(() => {
-    console.log("db connected");
-}).catch(err => {
-    console.error("could not connect to db: " + err);
-})
-
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.json());
-app.use(express.static(__dirname + "/public"));
 
 
-app.listen(3000, function () {
-    console.log("server started at http://localhost:3000");
-});
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/public/index.html");
