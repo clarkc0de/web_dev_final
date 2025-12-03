@@ -93,14 +93,18 @@ function linearRegression(x, y) {
 
 function renderStyleControls() {
     const container = document.getElementById("styleControls");
+    container.className = "row";
+    container.style.overflow = "scroll";
     container.innerHTML = "";
 
     for (const source in styleConfig) {
         const cfg = styleConfig[source];
 
-        container.innerHTML += `<h5>${source} Style</h5>`;
+        //container.innerHTML += `<h5>${source} Style</h5>`;
 
         container.innerHTML += `
+<div class="col-lg-4">
+            <h5>${source} Style</h5>
             <div><strong>${source} Mean Scatter</strong></div>
             Color: <input type="color" id="${source}_meanScatter_color" value="${cfg.meanScatter.color}">
             Shape:
@@ -136,7 +140,7 @@ function renderStyleControls() {
                 <option value="solid">Solid</option>
                 <option value="dashed">Dashed</option>
             </select>
-            <hr>
+            </div>
         `;
     }
 
