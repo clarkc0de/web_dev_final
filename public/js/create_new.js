@@ -70,7 +70,7 @@ function makeFigure(){
         });
 
         //location.href = '/edit_figure';
-        location.href = '/edit_figure';
+        location.href = '/edit_figure?date='+row+'&price='+col;
 }
     reader.readAsText(file);
 }
