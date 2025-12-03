@@ -1,6 +1,13 @@
 // edit_figure.js
 // Browser-side: fetches CSV from /get-csv, parses, computes monthly mean/median,
 // draws scatter plots + linear regressions, and renders a wide table.
+$(document).ready(function() {
+    // const queryString = window.location.search;
+    // const urlParams = new URLSearchParams(queryString);
+    // document.getElementById('dateCol').value = urlParams.get('date');
+    // document.getElementById('priceCol').value = urlParams.get('price');
+})
+
 function home(){
     location.href = '/';
 }
@@ -365,8 +372,15 @@ function reloadFiltered() {
 // ---------- Main orchestration ----------
 async function renderAll() {
     try {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        document.getElementById('dateCol').value = urlParams.get('date');
+        document.getElementById('priceCol').value = urlParams.get('price');
+
         const dateCol = document.getElementById('dateCol').value.trim();
+        console.log("date: "+dateCol);
         const priceCol = document.getElementById('priceCol').value.trim();
+        console.log("price: "+priceCol);
 
         const csvText = await fetchCSVText();
         const rows = parseCSV(csvText);
