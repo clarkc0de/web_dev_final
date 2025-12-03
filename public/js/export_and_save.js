@@ -363,9 +363,23 @@ async function exportCombined(type) {
 
 
 async function SavetoArchive(){
-    const text= $('#text_Analysis').value
-    const name= $('#project_name').value
-    console.log("got here")
+    const text= $('#text_Analysis').value;
+    let name= $('#project_name').val();
+    
+    if (name.trim() === "") {
+        let num_entries = 0;
+        try {
+            const data = await $.getJSON("/get-all-entries");
+            if (data.message === "success") {
+                num_entries = data.data.length;
+            }
+            name = "new data" + ` (${num_entries + 1})`;
+        } catch (error) {
+            console.error("Error fetching entries:", error);
+        }
+    }
+
+    console.log(name);
 
     await fetch('/upload-csv', {
         method: 'POST',
