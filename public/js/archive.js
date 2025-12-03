@@ -24,7 +24,7 @@ function getFigureObject(figure) {
                 <button class="btn btn-primary" onclick="exportFigure()">Export</button>
             </div>
             <div class="col">
-                <button class="btn btn-danger" onclick="deleteFigure('data-f')">Delete</button>
+<button class="btn btn-danger" onclick="deleteFigure('${figure._id}')">Delete</button>
             </div>
         </div>
     </li>`;
@@ -64,11 +64,10 @@ function editFigure(figure_id) {
 function exportFigure() {
     console.log("exportFigure called");
 }
-
 function deleteFigure(figure_id) {
-    // console.log(figure_id);
+    console.log(figure_id);
 
-    $.post("/delete-entry-by-id", figure_id)
+    $.post("/delete-entry-by-id", { _id: figure_id })
         .done(function (data) {
             console.log(data.message);
             if (data.message === "success") {

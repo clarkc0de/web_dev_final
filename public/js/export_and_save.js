@@ -365,7 +365,7 @@ async function exportCombined(type) {
 async function SavetoArchive(){
     const text= $('#text_Analysis').value;
     let name= $('#project_name').val();
-    
+
     if (name.trim() === "") {
         let num_entries = 0;
         try {

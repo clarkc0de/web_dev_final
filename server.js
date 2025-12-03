@@ -162,15 +162,16 @@ app.get('/get-all-entries', function (req, res) {
         });
     });
 });
-
 app.post('/delete-entry-by-id', function (req, res) {
-    Entry.deleteOne({"id":req.body.figure_id})
+    Entry.deleteOne({ "_id": req.body._id })
         .then(entry => {
-            res.send({"message": "success"});
-        }).catch(err => {
-            res.send({"message": err});
-    });
+            res.send({ "message": "success" });
+        })
+        .catch(err => {
+            res.send({ "message": err });
+        });
 });
+
 
 app.get('/edit-entry-by-id', function (req, res) {
 
