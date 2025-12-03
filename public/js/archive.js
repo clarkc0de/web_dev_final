@@ -1,3 +1,13 @@
+let figure = {
+    "master": "",
+    "current": "",
+    "style": ""
+}
+
+function loadFigure(figure) {
+
+}
+
 $(document).ready(function(){
     // console.log("on archive");
 });
@@ -24,7 +34,7 @@ function getFigureObject(figure) {
                 <button class="btn btn-primary" onclick="exportFigure()">Export</button>
             </div>
             <div class="col">
-                <button class="btn btn-danger" onclick="deleteFigure()">Delete</button>
+                <button class="btn btn-danger" onclick="deleteFigure('data-f')">Delete</button>
             </div>
         </div>
     </li>`;
@@ -53,9 +63,17 @@ function editFigure() {
 }
 
 function exportFigure() {
-
+    console.log("exportFigure called");
 }
 
-function deleteFigure() {
+function deleteFigure(figure_id) {
+    console.log(figure_id);
 
+    $.post("/delete-entry-by-id", figure_id)
+        .done(function(data) {
+            console.log(data.message);
+            if (data.message === "success") {
+                location.href = "/archive";
+            }
+        });
 }
