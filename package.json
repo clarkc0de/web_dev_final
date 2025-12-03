@@ -22,7 +22,8 @@
   "dependencies": {
     "body-parser": "^2.2.0",
     "express": "^5.1.0",
+    "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.12.1",
     "mongoose": "^8.20.0"
-  },
-  "devDependencies": {}
+  }
 }

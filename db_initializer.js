@@ -9,9 +9,17 @@ mongoose.connect('mongodb://localhost:27017/salesDB', {})
 
 
 const entrySchema = {
-    csv: String,
-    row: String,
-    col: String,
+    master: Object,
+    current: Object,
+    style: Object,
+    text:{
+        required:false,
+        type:String,
+    },
+    name:{
+        required:false,
+        type:String,
+    }
 }
 
 const Entry = mongoose.model('Entry', entrySchema);

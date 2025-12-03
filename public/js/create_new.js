@@ -22,8 +22,9 @@ function makeFigure(){
     const file = input.files[0];
     const row = $('#row-input');
     const col = $('#col-input');
+    const csv_name = file.name.slice(0, -4);  // Remove the last 4 characters
 
-
+    console.log(csv_name);
     //find error message and border and clear it
     const csvDiv = document.getElementById('formFile');
     const rowDiv = document.getElementById('row-input');
@@ -65,7 +66,7 @@ function makeFigure(){
         await fetch('/upload-csv', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ csv: csvText, row:row, col: col })
+            body: JSON.stringify({ csv: csvText, row:row, col: col, from: "create_new"})
         });
 
         //location.href = '/edit_figure';

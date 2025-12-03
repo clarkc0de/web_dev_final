@@ -6,9 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="2e7edd87-f282-4608-8396-7d079b70d6a1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/public/create_new.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/create_new.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/index.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/db_initializer.js" beforeDir="false" afterPath="$PROJECT_DIR$/db_initializer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/edit_figure.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/edit_figure.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/export_and_save.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/export_and_save.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/create_new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/create_new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/edit_figure.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/edit_figure.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/export_and_save.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/export_and_save.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,9 +96,16 @@
       <workItem from="1763503020353" duration="957000" />
       <workItem from="1763518465763" duration="262000" />
       <workItem from="1764090843447" duration="13918000" />
+<<<<<<< Updated upstream
       <workItem from="1764464228406" duration="200000" />
       <workItem from="1764464755873" duration="1146000" />
       <workItem from="1764526952918" duration="1881000" />
+=======
+      <workItem from="1764427496288" duration="21188000" />
+      <workItem from="1764452390009" duration="12000" />
+      <workItem from="1764517062269" duration="20532000" />
+      <workItem from="1764608336764" duration="7391000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
