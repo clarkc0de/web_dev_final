@@ -1,13 +1,3 @@
-let figure = {
-    "master": "",
-    "current": "",
-    "style": ""
-}
-
-function loadFigure(figure) {
-
-}
-
 $(document).ready(function(){
     // console.log("on archive");
 });
