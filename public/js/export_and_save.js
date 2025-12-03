@@ -1,4 +1,10 @@
+function home(){
+    location.href = '/';
+}
 
+function viewArchive(){
+    location.href = '/archive';
+}
 
 async function fetchCSVText() {
     const res = await fetch('/get-csv');
