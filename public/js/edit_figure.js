@@ -380,9 +380,15 @@ async function renderAll() {
         };
 
         $('#checkboxes').append(`<h4>Main CSV</h4>`);
+        let idx = 0;
         for (const m of monthlyStats) {
-            $('#checkboxes').append(renderCheckBoxes("main", m));
+            const div = $(renderCheckBoxes("main", m));
+            div.addClass( idx%2 === 0? "even-row":"odd-row");
+            $('#checkboxes').append(div);
+
+            idx++;
         }
+
 
         for (const m of monthlyStats) {
             document.getElementById(`main_${m.monthYear}_Mean`)
@@ -417,7 +423,12 @@ async function renderAll() {
 
             $('#checkboxes').append(`<h4>${name}</h4>`);
             for (const m of stats) {
-                $('#checkboxes').append(renderCheckBoxes(name, m));
+                const div = $(renderCheckBoxes(name, m));
+                div.addClass( idx%2 === 0? "even-row":"odd-row");
+                $('#checkboxes').append(div);
+
+                //console.log(idx);
+                idx++;
                 document.getElementById(`${name}_${m.monthYear}_Mean`)
                     .addEventListener('change', reloadFiltered);
                 document.getElementById(`${name}_${m.monthYear}_Median`)
