@@ -148,3 +148,27 @@ app.post('/export_and_save', function(req, res) {
          <script>location.href="/export_and_save.html"</script>`
     );
 })
+
+app.get('/get-all-entries', function (req, res) {
+    Entry.find().then(entries => {
+        res.send({
+            "message": "success",
+            "data": entries
+        });
+    }).catch(err => {
+        res.send({
+            "message": err,
+            "data": []
+        });
+    });
+});
+
+// WIP deleting single entry from mongoose
+app.post('/delete-entry-by-id', function (req, res) {
+    Entry.deleteOne({"id":req.body.figure_id})
+        .then(entry => {
+            res.send({"message": "success"});
+        }).catch(err => {
+            res.send({"message": err});
+    });
+});
