@@ -163,7 +163,6 @@ app.get('/get-all-entries', function (req, res) {
     });
 });
 
-// WIP deleting single entry from mongoose
 app.post('/delete-entry-by-id', function (req, res) {
     Entry.deleteOne({"id":req.body.figure_id})
         .then(entry => {
@@ -171,4 +170,8 @@ app.post('/delete-entry-by-id', function (req, res) {
         }).catch(err => {
             res.send({"message": err});
     });
+});
+
+app.get('/edit-entry-by-id', function (req, res) {
+
 });
