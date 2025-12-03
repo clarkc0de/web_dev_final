@@ -13,12 +13,12 @@ function createNew(){
 
 // functions for displaying list
 function getFigureObject(figure) {
+    console.log(figure.name);
     return `<li class="list-group-item" data-f="${figure._id.toString()}">
         <div class="row">
             <div class="col"><a>${figure.name}</a></div>
-            <div class="col"><a>Details</a></div>
             <div class="col">
-                <button class="btn btn-primary" onclick="editFigure()">Edit</button>
+                <button class="btn btn-primary" onclick="editFigure('data-f')">Edit</button>
             </div>
             <div class="col">
                 <button class="btn btn-primary" onclick="exportFigure()">Export</button>
@@ -48,8 +48,17 @@ $.getJSON("/get-all-entries").done(
 );
 
 // functions to make working buttons
-function editFigure() {
+function editFigure(figure_id) {
     console.log("editFigure called");
+    console.log(figure_id);
+
+    $.post("/edit-entry-by-id", figure_id)
+        .done(function (data) {
+            console.log(data.message);
+            if (data.message === "success") {
+                location.href = "/edit_figure";
+            }
+        });
 }
 
 function exportFigure() {
@@ -57,10 +66,10 @@ function exportFigure() {
 }
 
 function deleteFigure(figure_id) {
-    console.log(figure_id);
+    // console.log(figure_id);
 
     $.post("/delete-entry-by-id", figure_id)
-        .done(function(data) {
+        .done(function (data) {
             console.log(data.message);
             if (data.message === "success") {
                 location.href = "/archive";
