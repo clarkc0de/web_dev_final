@@ -1,3 +1,9 @@
+$(document).ready(function(){
+    $('#save_message').text('');
+
+})
+
+
 function home(){
     location.href = '/';
 }
@@ -365,7 +371,6 @@ async function exportCombined(type) {
 async function SavetoArchive(){
     const text= $('#text_Analysis').value;
     let name= $('#project_name').val();
-
     if (name.trim() === "") {
         let num_entries = 0;
         try {
@@ -394,6 +399,7 @@ async function SavetoArchive(){
         })
     });
     console.log("after fetching");
+    $('#save_message').text('saved successfully');
 }
 
 
