@@ -109,7 +109,7 @@ app.post('/upload-csv', function(req, res) {
         }
 
         temporaryCSV = csv;  // store the uploaded CSV text
-        console.log(temporaryCSV);
+        //console.log(temporaryCSV);
         res.send("CSV received");
 
         let csvString = '';
@@ -193,4 +193,18 @@ app.get('/get-all-entries', function (req, res) {
             "data": []
         });
     });
+});
+app.post('/delete-entry-by-id', function (req, res) {
+    Entry.deleteOne({ "_id": req.body._id })
+        .then(entry => {
+            res.send({ "message": "success" });
+        })
+        .catch(err => {
+            res.send({ "message": err });
+        });
+});
+
+
+app.get('/edit-entry-by-id', function (req, res) {
+
 });
