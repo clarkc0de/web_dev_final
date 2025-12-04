@@ -100,14 +100,18 @@ function linearRegression(x, y) {
 
 function renderStyleControls() {
     const container = document.getElementById("styleControls");
+    container.className = "row";
+    container.style.overflow = "scroll";
     container.innerHTML = "";
 
     for (const source in styleConfig) {
         const cfg = styleConfig[source];
 
-        container.innerHTML += `<h5>${source} Style</h5>`;
+        //container.innerHTML += `<h5>${source} Style</h5>`;
 
         container.innerHTML += `
+<div class="col-lg-4">
+            <h5>${source} Style</h5>
             <div><strong>${source} Mean Scatter</strong></div>
             Color: <input type="color" id="${source}_meanScatter_color" value="${cfg.meanScatter.color}">
             Shape:
@@ -143,7 +147,7 @@ function renderStyleControls() {
                 <option value="solid">Solid</option>
                 <option value="dashed">Dashed</option>
             </select>
-            <hr>
+            </div>
         `;
     }
 
@@ -394,9 +398,15 @@ async function renderAll() {
         };
 
         $('#checkboxes').append(`<h4>Main CSV</h4>`);
+        let idx = 0;
         for (const m of monthlyStats) {
-            $('#checkboxes').append(renderCheckBoxes("main", m));
+            const div = $(renderCheckBoxes("main", m));
+            div.addClass( idx%2 === 0? "even-row":"odd-row");
+            $('#checkboxes').append(div);
+
+            idx++;
         }
+
 
         for (const m of monthlyStats) {
             document.getElementById(`main_${m.monthYear}_Mean`)
@@ -431,7 +441,12 @@ async function renderAll() {
 
             $('#checkboxes').append(`<h4>${name}</h4>`);
             for (const m of stats) {
-                $('#checkboxes').append(renderCheckBoxes(name, m));
+                const div = $(renderCheckBoxes(name, m));
+                div.addClass( idx%2 === 0? "even-row":"odd-row");
+                $('#checkboxes').append(div);
+
+                //console.log(idx);
+                idx++;
                 document.getElementById(`${name}_${m.monthYear}_Mean`)
                     .addEventListener('change', reloadFiltered);
                 document.getElementById(`${name}_${m.monthYear}_Median`)

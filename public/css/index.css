@@ -24,9 +24,27 @@
 
 #csv-upload .btn{
     margin-top: 5%;
+    background-color: #e7e9ed;
+}
+#csv-upload .btn:hover{
     background-color: #dde1e6;
 }
 
 .input-error {
     border: 2px solid red;
+}
+
+#exports .btn{
+    background-color: #a6cfff;
+}
+
+.odd-row{
+    background-color: #f5f7f8;
+}
+.even-row{
+    background-color: #dfe4e6;
+}
+
+#exports .btn:hover{
+    background-color: #8dbaed;
 }
