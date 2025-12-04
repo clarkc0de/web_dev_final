@@ -12,9 +12,9 @@ function createNew(){
 }
 
 // functions for displaying list
-function getFigureObject(figure) {
-    console.log(figure.name);
-    return `<li class="list-group-item" data-f="${figure._id.toString()}">
+function getFigureObject(figure, idx) {
+    const rowClass = idx%2 === 0? 'even-row' : 'odd-row';
+    return `<li class="list-group-item ${rowClass}" data-f="${figure._id.toString()}">
         <div class="row">
             <div class="col"><a>${figure.name}</a></div>
             <div class="col">
@@ -33,9 +33,10 @@ function getFigureObject(figure) {
 function showList(figures) {
     $("#figure_list").empty();
 
-    figures.forEach(figure => {
-        $("#figure_list").append(getFigureObject(figure));
+    figures.forEach((figure, idx) => {
+        $("#figure_list").append(getFigureObject(figure, idx));
     });
+
 }
 
 $.getJSON("/get-all-entries").done(
