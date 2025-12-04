@@ -263,22 +263,13 @@ function exportFullTable(type) {
 
 
 
-function cloneDatasets(datasets) {
-    return datasets.map(ds => ({
-        label: ds.label,
-        type: ds.type,
-        showLine: ds.showLine,
-        backgroundColor: ds.backgroundColor,
-        borderColor: ds.borderColor,
-        pointRadius: ds.pointRadius,
-        pointStyle: ds.pointStyle,
-
-        // Deep copy data + convert x back to Date
-        data: ds.data.map(p => ({
-            x: p.x instanceof Date ? new Date(p.x) : new Date(p.x),
-            y: p.y
-        }))
-    }));
+function cloneDatasets(original) {
+    return original.map(ds => {
+        return {
+            ...ds,                                // copy all dataset-level settings
+            data: ds.data.map(pt => ({ ...pt }))   // deep copy points
+        };
+    });
 }
 
 
@@ -315,50 +306,97 @@ async function exportCombined(type) {
     clone.style.left = "-99999px";
     document.body.appendChild(clone);
 
+    // --- JPEG FIX: apply white backgrounds ---
+    clone.style.backgroundColor = "#ffffff";
+
+    clone.querySelectorAll("*").forEach(el => {
+        const cs = getComputedStyle(el);
+        if (
+            cs.backgroundColor === "rgba(0, 0, 0, 0)" ||
+            cs.backgroundColor === "transparent"
+        ) {
+            el.style.backgroundColor = "#ffffff";
+        }
+
+        // also prevent transparent border bleed
+        el.style.borderColor = el.style.borderColor || "transparent";
+    });
+
     // ---- FIX: clone the Chart.js canvas properly ----
 
     const originalCanvas = document.getElementById("priceChart");
-    const clonedCanvas = clone.querySelector("#priceChart");
+    const clonedCanvas = clone.querySelector("canvas#priceChart");
 
     const newCanvas = document.createElement("canvas");
+
+// 1. Set size FIRST
     newCanvas.width = originalCanvas.width;
     newCanvas.height = originalCanvas.height;
 
+// 2. Now fill with a solid background that JPEG requires
+    const ctx = newCanvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
+// 3. Replace original cloned canvas
     clonedCanvas.replaceWith(newCanvas);
 
-    // 5. Rebuild Chart.js on cloned canvas
+    // 5. Rebuild Chart.js exactly as original
     const chartClone = new Chart(newCanvas.getContext("2d"), {
         type: exportChart.config.type,
-        data: {
-            datasets: cloneDatasets(exportChart.data.datasets)
-        },
+        data: { datasets: cloneDatasets(exportChart.data.datasets) },
         options: JSON.parse(JSON.stringify(exportChart.options))
     });
 
-    // 6. Wait for chart render
+    // Wait for chart render
     await new Promise(res => setTimeout(res, 150));
 
-    // 7. Render clone with html2canvas
+    // 6b. COPY chart into a clean canvas to avoid JPEG tainting
+    const cleanCanvas = document.createElement("canvas");
+    cleanCanvas.width = newCanvas.width;
+    cleanCanvas.height = newCanvas.height;
+
+    const cleanCtx = cleanCanvas.getContext("2d");
+    cleanCtx.fillStyle = "#ffffff";
+    cleanCtx.fillRect(0, 0, cleanCanvas.width, cleanCanvas.height);
+    cleanCtx.drawImage(newCanvas, 0, 0);
+
+// Replace cloned chart canvas with the clean one
+    newCanvas.replaceWith(cleanCanvas);
+
+    // Render clone
     const canvas = await html2canvas(clone, {
         scale: 2,
         backgroundColor: "#ffffff",
-        useCORS: true
+        useCORS: true,
+        allowTaint: true
     });
 
-    // 8. Cleanup
-    clone.remove();
+// Always render PNG, then convert if needed
+    let dataUrl;
 
-    // 9. Export
-    const link = document.createElement("a");
-    link.download = "chart_and_table." + ext;
-    link.href = canvas.toDataURL("image/" + mime);
-    link.click();
+    if (mime === "jpeg") {
+        // Create temporary canvas to safely convert PNG → JPEG
+        const jpegCanvas = document.createElement("canvas");
+        jpegCanvas.width = canvas.width;
+        jpegCanvas.height = canvas.height;
+
+        const jpegCtx = jpegCanvas.getContext("2d");
+        jpegCtx.fillStyle = "#ffffff"; // JPEG cannot do alpha
+        jpegCtx.fillRect(0, 0, jpegCanvas.width, jpegCanvas.height);
+        jpegCtx.drawImage(canvas, 0, 0);
+
+        dataUrl = jpegCanvas.toDataURL("image/jpeg", 0.95);
+    } else {
+        dataUrl = canvas.toDataURL("image/png");
+    }
+
+    const outLink = document.createElement("a");
+    outLink.download = "chart_and_table." + ext;
+    outLink.href = dataUrl;
+    outLink.click();
+
 }
-
-
-
-
-
 
 
 
@@ -381,6 +419,71 @@ async function SavetoArchive(){
     });
     console.log("after fetching");
 }
+
+async function exportPDF() {
+    const element = document.getElementById("exportSection");
+
+    const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jspdf.jsPDF("p", "pt", "letter");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 40;
+    let y = margin;
+
+    // -----------------------------------------------------
+    // 1. TITLE (drawn directly in PDF)
+    // -----------------------------------------------------
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+    pdf.text("Monthly Analysis Report", pageWidth / 2, y, { align: "center" });
+    y += 30;
+
+    // -----------------------------------------------------
+    // 2. WRAPPED BODY TEXT (drawn directly in PDF)
+    // -----------------------------------------------------
+    const bodyText =
+        document.getElementById('Text_Analysis').value;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(11);
+
+    const wrapped = pdf.splitTextToSize(bodyText, pageWidth - margin * 2);
+
+
+    // -----------------------------------------------------
+    // 3. ADD THE IMAGE (chart + table snapshot)
+    // -----------------------------------------------------
+    const imgWidth = pageWidth - margin * 2;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    // Page break if needed
+    if (y + imgHeight > pdf.internal.pageSize.getHeight() - margin) {
+        pdf.addPage();
+        y = margin;
+    }
+
+    pdf.addImage(imgData, "PNG", margin, y, imgWidth, imgHeight);
+    y+=imgHeight +15;
+
+    pdf.text(wrapped, margin, y);
+
+    // Move Y down by text height
+    y += wrapped.length * 14 + 20;
+
+    pdf.save("export.pdf");
+}
+
+
+
+
+
+
+
 
 
 function ExportProject(){
@@ -417,42 +520,10 @@ function ExportProject(){
         exportCombined("png")
 
     }else if(i===5){
-        exportFullTable("jpg")
+        exportCombined("jpg")
 
     }else if(i===6){
-        const pdf = `
-        <h5>Sales Trend Analysis</h5>
-        
-        <div id="exp_chartWrapper">
-            <canvas id="exp_priceChart">
-            <!--graph here-->
-            </canvas>
-        </div>
-        
-        <div id="exp_tableWrapper">
-            <table id="exp_statsTable">
-            <!--table here-->
-            </table>
-        </div>
-        
-        <p><!--text here--></p>
-        `
-
-        const pdfFilled = pdf
-            .replace("<!--graph here-->", `<img src="${$('#priceChart')[0].toDataURL("image/png")}">`)
-            .replace("<!--table here-->", $('#statsTable').outerHTML)
-            .replace("<!--text here-->", $('#text_Analysis').value );
-
-        const options = {
-            margin: 1,
-            filename: 'my-document.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-
-        html2pdf().set(options).from(pdfFilled).download();
-
+        exportPDF()
     }
 }
 
