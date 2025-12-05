@@ -1,8 +1,6 @@
 $(document).ready(function(){
     $('#save_message').text('');
-
 })
-
 
 function home(){
     location.href = '/';
@@ -21,12 +19,10 @@ async function fetchCSVText() {
 
 
 
-
-
 function computeLinearRegression(points) {
     if (!points || points.length < 2) return [];
 
-    // Convert timestamps to numeric X
+    // Convert timestamps to numeric
     const xs = points.map(p => new Date(p.x).getTime());
     const ys = points.map(p => p.y);
 
@@ -39,7 +35,7 @@ function computeLinearRegression(points) {
     const slope = (n*sumXY - sumX*sumY) / (n*sumX2 - sumX*sumX);
     const intercept = (sumY - slope*sumX) / n;
 
-    // Build 2-point line (start + end)
+    // Build 2-point line
     const x1 = Math.min(...xs);
     const x2 = Math.max(...xs);
 
@@ -51,7 +47,7 @@ function computeLinearRegression(points) {
 
 
 
-
+//real start here
 fetchCSVText().then(data => {
     const instanceData = JSON.parse(data);
     const queryString = window.location.search;
@@ -74,10 +70,8 @@ fetchCSVText().then(data => {
         masterBySource = instanceData.master;
         currentBySource = instanceData.current;
         styleConfig = instanceData.style;
-        //console.log("STYLE CONFIG RECEIVED:", JSON.stringify(styleConfig, null, 2));
 
 
-// FIX: convert all x values into Date objects
         Object.values(currentBySource).forEach(src => {
             src.meanPoints = src.meanPoints.map(p => ({ x: new Date(p.x), y: p.y }));
             src.medianPoints = src.medianPoints.map(p => ({ x: new Date(p.x), y: p.y }));
@@ -89,9 +83,6 @@ fetchCSVText().then(data => {
 
 
 
-
-
-    // Rebuild regression arrays (Page B did not receive them)
     Object.keys(currentBySource).forEach(sourceName => {
         const src = currentBySource[sourceName];
 
@@ -99,7 +90,6 @@ fetchCSVText().then(data => {
         src.medianRegression = computeLinearRegression(src.medianPoints);
     });
 
-    // Now the data exists → render
     renderExportChart();
     renderExportTable();
 });
@@ -107,7 +97,6 @@ fetchCSVText().then(data => {
 
 let exportChart = null;
 
-// Recreate datasets exactly as Page A's chart does
 function buildDatasets() {
     const datasets = [];
 
@@ -115,7 +104,7 @@ function buildDatasets() {
         const source = currentBySource[sourceName];
         const style = styleConfig[sourceName]; // <- much easier to read
 
-        // ---- MEAN SCATTER ----
+        // MEAN SCATTER
         datasets.push({
             label: `${sourceName} Mean`,
             type: "scatter",
@@ -127,7 +116,7 @@ function buildDatasets() {
             showLine: false
         });
 
-        // ---- MEDIAN SCATTER ----
+        //MEDIAN SCATTER
         datasets.push({
             label: `${sourceName} Median`,
             type: "scatter",
@@ -139,7 +128,7 @@ function buildDatasets() {
             showLine: false
         });
 
-        // ---- MEAN TREND LINE ----
+        // MEAN TREND LINE
         datasets.push({
             label: `${sourceName} Mean Trend`,
             type: "line",
@@ -151,7 +140,7 @@ function buildDatasets() {
             pointRadius: 0
         });
 
-        // ---- MEDIAN TREND LINE ----
+        // MEDIAN TREND LINE
         datasets.push({
             label: `${sourceName} Median Trend`,
             type: "line",
@@ -167,11 +156,11 @@ function buildDatasets() {
     return datasets;
 }
 
-// Create the chart
+// Create the chart on the page
 function renderExportChart() {
     if (exportChart) exportChart.destroy();
 
-    const ctx = document.getElementById("priceChart").getContext("2d");
+    const ctx = $("#priceChart")[0].getContext("2d");
 
     exportChart = new Chart(ctx, {
         type: "scatter",
@@ -187,31 +176,27 @@ function renderExportChart() {
     });
 }
 
+
+//make chart for chart+table as 1 image
 let exportChartIMG = null;
 
 function renderExportChartIMG(canvas, originalConfig) {
     const ctx = canvas.getContext("2d");
 
-    // === KEY FIX: Use the original canvas size ===
     canvas.width = exportChart.width;
     canvas.height = exportChart.height;
 
-    // Destroy previous export-only chart instance
     if (window._exportChartInstance) {
         window._exportChartInstance.destroy();
     }
 
-    // Clone the config safely (prevent recursion problems)
     const clonedConfig = JSON.parse(JSON.stringify(originalConfig));
 
-    // Overwrite responsive system
     clonedConfig.options.responsive = false;
     clonedConfig.options.animation = false;
 
-    // Build new datasets fresh
     clonedConfig.data.datasets = buildDatasets();
 
-    // Create export chart instance
     window._exportChartInstance = new Chart(ctx, clonedConfig);
 
     return window._exportChartInstance;
@@ -219,12 +204,6 @@ function renderExportChartIMG(canvas, originalConfig) {
 
 
 
-
-
-
-// -----------------------------------------------------
-// 3. Render the wide monthly table from currentBySource
-// -----------------------------------------------------
 function renderExportTable() {
     const table = document.getElementById("statsTable");
     table.innerHTML = "";
@@ -283,26 +262,25 @@ function exportFullTable(type) {
     }
     const originalTable = document.getElementById("statsTable");
 
-    // 1 — Create a full-page off-screen container
     const temp = document.createElement("div");
     temp.style.position = "absolute";
     temp.style.left = "-999999px";
     temp.style.top = "0";
-    temp.style.width = originalTable.scrollWidth + "px"; // IMPORTANT
+    temp.style.width = originalTable.scrollWidth + "px";
     temp.style.height = "auto";
     temp.style.display = "block";
-    temp.style.overflow = "visible"; // IMPORTANT
-    temp.style.background = "white"; // avoid transparency bugs
+    temp.style.overflow = "visible";
+    temp.style.background = "white";
 
-    // 2 — Clone table EXACTLY
+
     const clone = originalTable.cloneNode(true);
-    clone.style.width = originalTable.scrollWidth + "px"; // IMPORTANT
-    clone.style.display = "table"; // avoid CSS collapse
+    clone.style.width = originalTable.scrollWidth + "px";
+    clone.style.display = "table";
     temp.appendChild(clone);
 
     document.body.appendChild(temp);
 
-    // 3 — Render at full dimensions
+
     html2canvas(clone, {
         backgroundColor: "#ffffff",
         width: clone.scrollWidth,
@@ -311,18 +289,14 @@ function exportFullTable(type) {
         windowHeight: clone.scrollHeight,
     }).then(canvas => {
 
-        // 4 — Download
         const a = document.createElement("a");
         a.href = canvas.toDataURL("image/"+i);
         a.download = "table."+j;
         a.click();
 
-        // 5 — Cleanup
         document.body.removeChild(temp);
     });
 }
-
-
 
 
 function cloneDatasets(original) {
@@ -338,16 +312,12 @@ function cloneDatasets(original) {
         borderWidth: ds.borderWidth,
         tension: ds.tension,
 
-        // The important part:
-        // deep copy, but preserve Date objects so Chart.js can parse them
         data: ds.data.map(pt => ({
             x: (pt.x instanceof Date ? new Date(pt.x) : pt.x),
             y: pt.y
         }))
     }));
 }
-
-
 
 
 async function exportCombined(type) {
@@ -360,12 +330,10 @@ async function exportCombined(type) {
         ext = "jpg";
     }
 
-    const target = document.getElementById("doubleWrapper");
+    const target = $("#doubleWrapper")[0];
 
-    // 1. Clone region
     const clone = target.cloneNode(true);
 
-    // 2. Expand width / overflow so nothing crops
     clone.style.width = "fit-content";
     clone.style.maxWidth = "none";
     clone.style.overflow = "visible";
@@ -376,12 +344,10 @@ async function exportCombined(type) {
         el.style.width = "auto";
     });
 
-    // 3. Insert clone offscreen
     clone.style.position = "absolute";
     clone.style.left = "-99999px";
     document.body.appendChild(clone);
 
-    // White backgrounds for JPEG safety
     clone.style.backgroundColor = "#ffffff";
     clone.querySelectorAll("*").forEach(el => {
         const cs = getComputedStyle(el);
@@ -392,37 +358,28 @@ async function exportCombined(type) {
         el.style.borderColor = el.style.borderColor || "transparent";
     });
 
-    // ---- FIX: clone the Chart.js canvas properly ----
 
-    const originalCanvas = document.getElementById("priceChart");
+    const originalCanvas = $("#priceChart")[0];
     const cloneCanvas = clone.querySelector("canvas#priceChart");
 
-    // Make a completely fresh canvas
     const newCanvas = document.createElement("canvas");
     newCanvas.width = originalCanvas.width;
     newCanvas.height = originalCanvas.height;
 
-    // Fill background (Chart.js would otherwise stay transparent)
     const ctx = newCanvas.getContext("2d");
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
 
-    // Replace the cloned canvas with our new one
     cloneCanvas.replaceWith(newCanvas);
 
-    // --------- HERE IS THE NEW PART ---------
-    // Render export-only Chart.js instance
     console.log("=== buildDatasets() for export ===",
         JSON.parse(JSON.stringify(buildDatasets())));
     const baseConfig = exportChart.options?._config || exportChart.config?._config || exportChart.config;
     const exportChartIMG = renderExportChartIMG(newCanvas, baseConfig);
 
-    // ----------------------------------------
-
-    // Wait for chart render
     await new Promise(res => setTimeout(res, 150));
 
-    // Copy chart to a clean canvas (prevents JPEG tainting issues)
+    // Copy chart to a clean canvas
     const cleanCanvas = document.createElement("canvas");
     cleanCanvas.width = newCanvas.width;
     cleanCanvas.height = newCanvas.height;
@@ -434,7 +391,7 @@ async function exportCombined(type) {
 
     newCanvas.replaceWith(cleanCanvas);
 
-    // Render clone with html2canvas
+    // Render clone
     const canvas = await html2canvas(clone, {
         scale: 2,
         backgroundColor: "#ffffff",
@@ -464,8 +421,6 @@ async function exportCombined(type) {
     outLink.href = dataUrl;
     outLink.click();
 }
-
-
 
 
 async function SavetoArchive(){
@@ -503,7 +458,7 @@ async function SavetoArchive(){
 }
 
 async function exportPDF() {
-    const element = document.getElementById("exportSection");
+    const element = $("#exportSection")[0];
 
     const canvas = await html2canvas(element, {
         scale: 2,
@@ -517,17 +472,11 @@ async function exportPDF() {
     const margin = 40;
     let y = margin;
 
-    // -----------------------------------------------------
-    // 1. TITLE (drawn directly in PDF)
-    // -----------------------------------------------------
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(20);
     pdf.text("Monthly Analysis Report", pageWidth / 2, y, { align: "center" });
     y += 30;
 
-    // -----------------------------------------------------
-    // 2. WRAPPED BODY TEXT (drawn directly in PDF)
-    // -----------------------------------------------------
     const bodyText =
         document.getElementById('Text_Analysis').value;
 
@@ -537,9 +486,6 @@ async function exportPDF() {
     const wrapped = pdf.splitTextToSize(bodyText, pageWidth - margin * 2);
 
 
-    // -----------------------------------------------------
-    // 3. ADD THE IMAGE (chart + table snapshot)
-    // -----------------------------------------------------
     const imgWidth = pageWidth - margin * 2;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -559,13 +505,6 @@ async function exportPDF() {
 
     pdf.save("export.pdf");
 }
-
-
-
-
-
-
-
 
 
 function ExportProject(){
@@ -592,18 +531,12 @@ function ExportProject(){
 
     }else if(i===2){
         exportFullTable("png")
-
-
-
     }else if(i===3){
         exportFullTable("jpg")
-
     }else if(i===4){
         exportCombined("png")
-
     }else if(i===5){
         exportCombined("jpg")
-
     }else if(i===6){
         exportPDF()
     }
