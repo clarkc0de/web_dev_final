@@ -181,7 +181,7 @@ app.post('/edit-entry-by-id', function (req, res) {
         // styleConfig = entry.style;
         temporaryCSV=entry;
         res.send({'message': 'success'});
-    })
+    });
 
 });
 
@@ -194,5 +194,24 @@ app.post('/export-entry-by-id', function (req, res) {
         //console.log(entry.master.main);
         temporaryCSV=entry;
         res.send({'message': 'success'});
-    })
-})
+    });
+});
+
+app.get('/get-entries-by-name', function (req, res) {
+    let name = req.query.search_key;
+    console.log(name);
+
+    Entry.find({
+        name: {$regex: name}
+    }).then(entries => {
+        res.send({
+            "message": "success",
+            "data": entries
+        });
+    }).catch(err => {
+        res.send({
+            "message": err,
+            "data": []
+        });
+    });
+});

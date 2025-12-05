@@ -11,11 +11,15 @@ function createNew(){
     location.href = '/create_new';
 }
 
-// functions for search bar
+// function for search bar
 function searchArchive() {
-
+    $.getJSON("/get-entries-by-name", {
+        search_key: $("#search_box").val()
+    }).done(function (data) {
+        console.log(data);
+        showList(data.data);
+    });
 }
-
 
 // functions for displaying list
 function getFigureObject(figure, idx) {
