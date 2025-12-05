@@ -7,8 +7,6 @@
     <!-- Chart.js + date adapter -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
     <!-- PapaParse for robust CSV parsing in browser -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -60,29 +58,25 @@
             height: 500px !important;
         }
         #statsTable {
-            /* BE A REAL TABLE (not block) so table-layout works) */
             display: table;
-            table-layout: fixed;    /* force equal-ish column widths and enable wrapping */
-            width: 100%;            /* fill available width (wrapper controls overflow) */
-            max-width: none;        /* let CSS/parent control final width -- don't cap it here */
+            table-layout: fixed;
+            width: 100%;
+            max-width: none;
             border-collapse: collapse;
-            /* remove overflow-x / display:block here if present */
         }
 
-        /* cells: allow wrapping inside cells, keep your borders */
         #statsTable th,
         #statsTable td {
             border: 1px solid #ccc;
             padding: 6px 8px;
             text-align: right;
 
-            white-space: normal !important;    /* allow wrapping */
-            overflow-wrap: anywhere;           /* force breaking for long tokens */
+            white-space: normal !important;
+            overflow-wrap: anywhere;
             word-break: break-word;
-            font-size: 10px;                   /* reduce size to help fitting */
+            font-size: 10px;
         }
 
-        /* month header and label styles preserved */
         #statsTable th.month {
             writing-mode: horizontal-tb;
             text-align: center;
@@ -117,25 +111,29 @@
     </div>
 </section>
 
+
+<canvas id="exportCanvas" width="1200" height="700" style="display:none;"></canvas>
+
+
 <div class="row">
 
     <div  class="col-md-8">
         <div id="exportSection">
-        <div id="doubleWrapper">
-        <div id="chartWrapper">
-            <canvas id="priceChart"></canvas>
-        </div>
+            <div id="doubleWrapper">
+                <div id="chartWrapper">
+                    <canvas id="priceChart"></canvas>
+                </div>
 
-        <h3>Monthly Stats (wide)</h3>
-        <div id="tableWrapper" style="overflow:auto">
-            <table id="statsTable">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        </div>
+                <h3>Monthly Stats (wide)</h3>
+                <div id="tableWrapper" style="overflow:auto">
+                    <table id="statsTable">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-            <textarea id="Text_Analysis" rows="10" cols="150" placeholder="If Exporting as a PDF, you can input your text analysis here"></textarea>
+        </div>
+        <textarea id="Text_Analysis" rows="10" cols="150" placeholder="If Exporting as a PDF, you can input your text analysis here"></textarea>
 
     </div>
     <div class="col-md-4">

@@ -34,17 +34,37 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <style>
-        body { font-family: Arial, sans-serif; padding-left: 18px; padding-right: 18px; }
+        body {
+            font-family: Arial, sans-serif;
+            padding-left: 18px;
+            padding-right: 18px;
+        }
 
-        label { margin-right: 8px; }
-        #controls { margin-bottom: 12px; }
+        label {
+            margin-right: 8px;
+        }
+        #controls {
+            margin-bottom: 12px;
+        }
         #chartWrapper {
             margin-top: 12px;
             width: 100%;
             height: 500px !important;
         }
-        #statsTable { border-collapse: collapse; width: 100%; max-width: 1200px; overflow-x: auto; display: block; }
-        #statsTable th, #statsTable td { border: 1px solid #ccc; padding: 6px 8px; text-align: right; }
+
+        /*stats table needs alot*/
+        #statsTable {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+            display: block;
+        }
+        #statsTable th, #statsTable td {
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+            text-align: right;
+        }
         #statsTable th.month { writing-mode: horizontal-tb; text-align: center; background: #f4f4f4; }
         #statsTable th.rowLabel { background: #eef; text-align: left; }
 
@@ -83,8 +103,7 @@
     <label>Price column:
         <input class="form-control" id="priceCol" type="text" />
     </label>
-    <button id="refreshBtn">Load / Refresh</button>
-    <button id="exportPngBtn">Export Chart PNG</button>
+    <button id="refreshBtn" onclick="Reload()">Load / Refresh</button>
 </div>
 
 
@@ -96,7 +115,7 @@
     <canvas id="priceChart"></canvas>
 </div>
 
-<h3>Monthly Stats (wide)</h3>
+<h3>Monthly Stats</h3>
 <div style="overflow:auto">
     <table id="statsTable"></table>
 </div>
@@ -112,7 +131,6 @@
     <div class="col-8">
         <h4>Graph Style Controls</h4>
         <div id="styleControls" class="mb-3" style="padding:10px; border:1px solid #ccc; border-radius:6px;">
-            <!-- dynamically filled by JS -->
         </div>
     </div>
     <div class="col-4">

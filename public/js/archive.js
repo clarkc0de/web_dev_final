@@ -18,10 +18,10 @@ function getFigureObject(figure, idx) {
         <div class="row">
             <div class="col"><a>${figure.name}</a></div>
             <div class="col">
-                <button class="btn btn-primary" onclick="editFigure('data-f')">Edit</button>
+                <button class="btn btn-primary" onclick="editFigure('${figure._id}')">Edit</button>
             </div>
             <div class="col">
-                <button class="btn btn-primary" onclick="exportFigure()">Export</button>
+                <button class="btn btn-primary" onclick="exportFigure('${figure._id}')">Export</button>
             </div>
             <div class="col">
 <button class="btn btn-danger" onclick="deleteFigure('${figure._id}')">Delete</button>
@@ -42,7 +42,7 @@ function showList(figures) {
 $.getJSON("/get-all-entries").done(
     data => {
         if (data.message === "success") {
-            console.log(data.data);
+            //console.log(data.data);
             showList(data.data);
         }
     }
@@ -51,19 +51,28 @@ $.getJSON("/get-all-entries").done(
 // functions to make working buttons
 function editFigure(figure_id) {
     console.log("editFigure called");
-    console.log(figure_id);
+    //console.log(figure_id);
 
-    $.post("/edit-entry-by-id", figure_id)
+    $.post("/edit-entry-by-id", {"_id":figure_id})
         .done(function (data) {
             console.log(data.message);
             if (data.message === "success") {
-                location.href = "/edit_figure";
+                location.href = "/edit_figure?from=archive";
             }
         });
 }
 
-function exportFigure() {
+function exportFigure(figure_id) {
     console.log("exportFigure called");
+
+    $.post("/export-entry-by-id", {"_id":figure_id})
+        .done(function (data) {
+            console.log(data.message);
+            if (data.message === "success") {
+                location.href = "/export_and_save?from=archive";
+            }
+        });
+
 }
 function deleteFigure(figure_id) {
     console.log(figure_id);

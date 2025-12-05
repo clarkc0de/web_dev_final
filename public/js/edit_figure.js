@@ -1,13 +1,8 @@
 // edit_figure.js
 // Browser-side: fetches CSV from /get-csv, parses, computes monthly mean/median,
-// draws scatter plots + linear regressions, and renders a wide table.
-$(document).ready(function() {
-    // const queryString = window.location.search;
-    // const urlParams = new URLSearchParams(queryString);
-    // document.getElementById('dateCol').value = urlParams.get('date');
-    // document.getElementById('priceCol').value = urlParams.get('price');
-})
+// draws scatter plots + linear regressions, and renders a table.
 
+//header functions
 function home(){
     location.href = '/';
 }
@@ -16,11 +11,16 @@ function viewArchive(){
     location.href = '/archive';
 }
 
+// PAGE CONTENT
+function Reload(){
+    location.href='/edit_figure?date='+document.getElementById('dateCol').value+'&price='+document.getElementById('priceCol').value;
+}
 
-let masterBySource = {};   // { filename: [ {monthYear, monthDate, mean, median}, ... ] }
+
+let masterBySource = {};
 let currentBySource = {};
 let styleConfig = {};
-// ---------- Helpers ----------
+// Helpers
 async function fetchCSVText() {
     const res = await fetch('/get-csv');
     if (!res.ok) throw new Error('Failed to fetch CSV from server');
@@ -28,13 +28,13 @@ async function fetchCSVText() {
     return txt;
 }
 
-// robust CSV -> array of objects using PapaParse
+// CSV to array of objects
 function parseCSV(text) {
     const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
     if (parsed.errors && parsed.errors.length) {
         console.warn('CSV parse warnings/errors:', parsed.errors.slice(0,3));
     }
-    return parsed.data; // array of objects keyed by header
+    return parsed.data;
 }
 
 function parsePrice(value) {
@@ -45,11 +45,63 @@ function parsePrice(value) {
     return isNaN(n) ? null : n;
 }
 
+
+//from archive helper, archive data not in same format as this page
+function rebuildMonthlyStats(masterBySource) {
+    const rebuilt = {};
+
+    console.log(masterBySource);
+
+    for (const source in masterBySource) {
+        console.log(source)
+        const srcData = masterBySource[source];
+
+        if (!srcData.meanPoints || !srcData.medianPoints) {
+            console.warn("Source missing points:", source);
+            continue;
+        }
+
+        const medianByMonth = {};
+        for (const m of srcData.medianPoints) {
+            const d = new Date(m.x);
+            const monthYear = d.toISOString().slice(0, 7); // YYYY-MM
+            medianByMonth[monthYear] = m.y;
+        }
+
+        const monthlyStats = [];
+
+        // Combine mean + median into unified monthly records
+        for (const meanObj of srcData.meanPoints) {
+            const d = new Date(meanObj.x);
+            const monthYear = d.toISOString().slice(0, 7);
+
+            monthlyStats.push({
+                monthYear: monthYear,
+                monthDate: d,
+                mean: meanObj.y,
+                median: medianByMonth[monthYear] ?? null
+            });
+        }
+
+        monthlyStats.sort((a, b) => a.monthDate - b.monthDate);
+
+        rebuilt[source] = monthlyStats;
+    }
+
+    return rebuilt;
+}
+
+//from archive helper end
+
+
+
+
+
 function monthKeyFromDate(d) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
 }
 
-// compute monthly mean & median; returns array of {monthYear, date(1st), mean, median}
+// compute monthly mean and median, should return array of {monthYear, date(1st), mean, median}
 function computeMonthlyStatsFromRows(rows, dateCol, priceCol) {
     const buckets = {};
     for (const r of rows) {
@@ -79,7 +131,7 @@ function computeMonthlyStatsFromRows(rows, dateCol, priceCol) {
     return out;
 }
 
-// simple linear regression (least squares) for arrays x[], y[]
+
 function linearRegression(x, y) {
     if (x.length !== y.length || x.length === 0) return null;
     const n = x.length;
@@ -96,18 +148,17 @@ function linearRegression(x, y) {
     const b = meanY - m*meanX;
     return { m, b };
 }
-//style control renderring
 
+
+//style control rendering
 function renderStyleControls() {
-    const container = document.getElementById("styleControls");
+    const container = $("#styleControls")[0];
     container.className = "row";
     container.style.overflow = "scroll";
     container.innerHTML = "";
 
     for (const source in styleConfig) {
         const cfg = styleConfig[source];
-
-        //container.innerHTML += `<h5>${source} Style</h5>`;
 
         container.innerHTML += `
 <div class="col-lg-4">
@@ -151,7 +202,7 @@ function renderStyleControls() {
         `;
     }
 
-    // Wiring: when any control changes, reapply styles
+    //when any control changes, reapply styles
     container.querySelectorAll("input, select").forEach(el => {
         el.addEventListener("change", () => {
             applyUpdatedStyles();
@@ -165,41 +216,33 @@ function applyUpdatedStyles() {
     for (const source in styleConfig) {
         const cfg = styleConfig[source];
 
-        cfg.meanScatter.color  = document.getElementById(`${source}_meanScatter_color`).value;
-        cfg.meanScatter.shape  = document.getElementById(`${source}_meanScatter_shape`).value;
+        cfg.meanScatter.color  = $(`#${source}_meanScatter_color`)[0].value;
+        cfg.meanScatter.shape  = $(`#${source}_meanScatter_shape`)[0].value;
 
-        cfg.medianScatter.color = document.getElementById(`${source}_medianScatter_color`).value;
-        cfg.medianScatter.shape = document.getElementById(`${source}_medianScatter_shape`).value;
+        cfg.medianScatter.color = $(`#${source}_medianScatter_color`)[0].value;
+        cfg.medianScatter.shape = $(`#${source}_medianScatter_shape`)[0].value;
 
-        cfg.meanLine.color     = document.getElementById(`${source}_meanLine_color`).value;
-        cfg.meanLine.mode      = document.getElementById(`${source}_meanLine_mode`).value;
+        cfg.meanLine.color     = $(`#${source}_meanLine_color`)[0].value;
+        cfg.meanLine.mode      = $(`#${source}_meanLine_mode`)[0].value;
 
-        cfg.medianLine.color   = document.getElementById(`${source}_medianLine_color`).value;
-        cfg.medianLine.mode    = document.getElementById(`${source}_medianLine_mode`).value;
+        cfg.medianLine.color   = $(`#${source}_medianLine_color`)[0].value;
+        cfg.medianLine.mode    = $(`#${source}_medianLine_mode`)[0].value;
     }
 }
 
 
-// ---------- Chart rendering ----------
+// Chart rendering
 let chartInstance = null;
 
 function renderChartFromMonthlyStats() {
-    // monthlyStats: array of {monthYear, monthDate (Date), mean, median}
-    const ctx = document.getElementById('priceChart').getContext('2d');
+
+    const ctx = $('#priceChart')[0].getContext('2d');
     const datasets = [];
 
-    const colors = [
-        'crimson', 'dodgerblue', 'forestgreen', 'purple',
-        'orange', 'goldenrod', 'teal', 'indigo'
-    ];
-    let colorIndex = 0;
 
     for (const source in currentBySource) {
         const stats = currentBySource[source];
         if (!stats.length) continue;
-
-        const color = colors[colorIndex % colors.length];
-        colorIndex++;
 
         const meanPoints   = stats.filter(r=>r.mean!=null)
             .map(r=>({ x: r.monthDate, y: r.mean }));
@@ -286,8 +329,8 @@ function renderChartFromMonthlyStats() {
     });
 }
 
-// ---------- Table rendering (wide orientation) ----------
-function renderWideTable() {
+//Table rendering
+function renderTable() {
     const table = document.getElementById('statsTable');
     let html = '';
 
@@ -347,8 +390,8 @@ function applyFiltersFromCheckboxes() {
 
     for (const source in masterBySource) {
         updated[source] = masterBySource[source].map(row => {
-            const meanChecked   = document.getElementById(`${source}_${row.monthYear}_Mean`).checked;
-            const medianChecked = document.getElementById(`${source}_${row.monthYear}_Median`).checked;
+            const meanChecked   = $(`#${source}_${row.monthYear}_Mean`)[0].checked;
+            const medianChecked = $(`#${source}_${row.monthYear}_Median`)[0].checked;
 
             return {
                 monthYear: row.monthYear,
@@ -366,62 +409,101 @@ function applyFiltersFromCheckboxes() {
 function reloadFiltered() {
     applyFiltersFromCheckboxes();
     renderChartFromMonthlyStats();
-    renderWideTable();
+    renderTable();
 }
 
-// ---------- Main orchestration ----------
+// Main
 async function renderAll() {
     try {
+
+
+
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        document.getElementById('dateCol').value = urlParams.get('date');
-        document.getElementById('priceCol').value = urlParams.get('price');
+        let monthlyStats;
+        if(urlParams.get('date')){
 
-        const dateCol = document.getElementById('dateCol').value.trim();
-        console.log("date: "+dateCol);
-        const priceCol = document.getElementById('priceCol').value.trim();
-        console.log("price: "+priceCol);
+            $('#dateCol')[0].value = urlParams.get('date');
+            $('#priceCol')[0].value = urlParams.get('price');
 
-        const csvText = await fetchCSVText();
-        const rows = parseCSV(csvText);
+            const dateCol = $('#dateCol')[0].value.trim();
+            console.log("date: "+dateCol);
+            const priceCol = $('#priceCol')[0].value.trim();
+            console.log("price: "+priceCol);
+
+            const csvText = await fetchCSVText();
+            const rows = parseCSV(csvText);
 
 
-        const monthlyStats = computeMonthlyStatsFromRows(rows, dateCol, priceCol);
+            monthlyStats = computeMonthlyStatsFromRows(rows, dateCol, priceCol);
+            console.log(monthlyStats);
 
-        masterBySource["main"] = monthlyStats;
-        currentBySource["main"] = structuredClone(monthlyStats);
-        styleConfig["main"] = {
-            meanScatter:  { color: "#d62728", shape: "circle" },
-            medianScatter:{ color: "#1f77b4", shape: "triangle" },
-            meanLine:     { color: "#d62728", mode: "solid" },
-            medianLine:   { color: "#1f77b4", mode: "dashed" }
-        };
+            masterBySource["main"] = monthlyStats;
+            currentBySource["main"] = structuredClone(monthlyStats);
+            styleConfig["main"] = {
+                meanScatter:  { color: "#d62728", shape: "circle" },
+                medianScatter:{ color: "#1f77b4", shape: "triangle" },
+                meanLine:     { color: "#d62728", mode: "solid" },
+                medianLine:   { color: "#1f77b4", mode: "dashed" }
+            };
 
-        $('#checkboxes').append(`<h4>Main CSV</h4>`);
-        let idx = 0;
-        for (const m of monthlyStats) {
-            const div = $(renderCheckBoxes("main", m));
-            div.addClass( idx%2 === 0? "even-row":"odd-row");
-            $('#checkboxes').append(div);
+            $('#checkboxes').append(`<h4>Main CSV</h4>`);
+            idx = 0;
+            for (const m of monthlyStats) {
+                const div = $(renderCheckBoxes("main", m));
+                div.addClass( idx%2 === 0? "even-row":"odd-row");
+                $('#checkboxes').append(div);
 
-            idx++;
+                idx++;
+            }
+
+
+            for (const m of monthlyStats) {
+                $(`#main_${m.monthYear}_Mean`)[0]
+                    .addEventListener("change", reloadFiltered);
+
+                $(`#main_${m.monthYear}_Median`)[0]
+                    .addEventListener("change", reloadFiltered);
+            }
+        }else if(urlParams.get('from')){
+            const data = await fetchCSVText();
+            const csvText = JSON.parse(data);
+            console.log(csvText.text);
+            masterBySource=rebuildMonthlyStats(csvText.master);
+            currentBySource=rebuildMonthlyStats(csvText.current);
+            styleConfig=csvText.style;
+            monthlyStats=rebuildMonthlyStats(csvText.master);
+            console.log(monthlyStats);
+
+            for(const source in monthlyStats) {
+                $('#checkboxes').append(`<h4>${source}</h4>`);
+                idx = 0;
+                for (const m of monthlyStats[source]) {
+                    const div = $(renderCheckBoxes(source, m));
+                    div.addClass( idx%2 === 0? "even-row":"odd-row");
+                    $('#checkboxes').append(div);
+
+                    idx++;
+                }
+
+
+                for (const m of monthlyStats[source]) {
+                    console.log(m.monthYear);
+                    document.getElementById(source+'_'+m.monthYear+'_Mean')
+                        .addEventListener("change", reloadFiltered);
+
+                    document.getElementById(source+'_'+m.monthYear+'_Median')
+                        .addEventListener("change", reloadFiltered);
+                }
+            }
+
         }
-
-
-        for (const m of monthlyStats) {
-            document.getElementById(`main_${m.monthYear}_Mean`)
-                .addEventListener("change", reloadFiltered);
-
-            document.getElementById(`main_${m.monthYear}_Median`)
-                .addEventListener("change", reloadFiltered);
-        }
-
-        document.getElementById("formFile").addEventListener("change", async evt => {
+        $("#formFile")[0].addEventListener("change", async evt => {
             const file = evt.target.files[0];
             if (!file) return;
 
-            const dateCol = document.getElementById('newdateCol').value.trim();
-            const priceCol = document.getElementById('newpriceCol').value.trim();
+            const dateCol = $('#newdateCol')[0].value.trim();
+            const priceCol = $('#newpriceCol')[0].value.trim();
 
             const text = await file.text();
             const rows = parseCSV(text);
@@ -465,25 +547,13 @@ async function renderAll() {
         }
 
         renderChartFromMonthlyStats(monthlyStats);
-        renderWideTable(monthlyStats);
+        renderTable(monthlyStats);
     } catch (err) {
         console.error(err);
         alert('Error: ' + (err.message || err));
     }
 
     renderStyleControls();
-}
-
-// ---------- Export PNG of chart ----------
-function exportChartPNG() {
-    if (!chartInstance) {
-        alert('Chart not rendered yet.');
-        return;
-    }
-    const a = document.createElement('a');
-    a.href = document.getElementById('priceChart').toDataURL('image/png');
-    a.download = 'price_chart.png';
-    a.click();
 }
 
 
@@ -537,11 +607,7 @@ function ExportorSave() {
     form.submit();
 }
 
-// ---------- Wire up buttons ----------
-document.getElementById('refreshBtn').addEventListener('click', renderAll);
-document.getElementById('exportPngBtn').addEventListener('click', exportChartPNG);
 
-// Auto-run on load (optional)
 window.addEventListener('load', () => {
     renderAll().catch(e => console.warn(e));
 });

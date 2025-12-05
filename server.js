@@ -173,6 +173,26 @@ app.post('/delete-entry-by-id', function (req, res) {
 });
 
 
-app.get('/edit-entry-by-id', function (req, res) {
+app.post('/edit-entry-by-id', function (req, res) {
+
+    Entry.findById({ "_id": req.body._id }).then(entry => {
+        // masterBySource= entry.master;
+        // currentBySource = entry.current;
+        // styleConfig = entry.style;
+        temporaryCSV=entry;
+        res.send({'message': 'success'});
+    })
 
 });
+
+app.post('/export-entry-by-id', function (req, res) {
+
+    Entry.findById({ "_id": req.body._id }).then(entry => {
+        // masterBySource= entry.master;
+        // currentBySource = entry.current;
+        // styleConfig = entry.style;
+        //console.log(entry.master.main);
+        temporaryCSV=entry;
+        res.send({'message': 'success'});
+    })
+})
