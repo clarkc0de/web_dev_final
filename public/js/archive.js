@@ -11,6 +11,12 @@ function createNew(){
     location.href = '/create_new';
 }
 
+// functions for search bar
+function searchArchive() {
+
+}
+
+
 // functions for displaying list
 function getFigureObject(figure, idx) {
     const rowClass = idx%2 === 0? 'even-row' : 'odd-row';
